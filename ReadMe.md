@@ -230,7 +230,7 @@ We can get the pipeline json file by
 
 Change your json file as follow
 
-    ``` json
+``` json
 
     {
         "pipeline": {
@@ -309,14 +309,14 @@ Change your json file as follow
         }
     }
 
-    ```
+```
 After editing the pipeline file update by aws-cli cmd
 
-    ``` sh
+``` sh
 
     aws codepipeline update-pipeline --cli-input-json file://failed-cross-pipeline.json --profile dan2505
 
-    ```
+```
 
 
 [NOTE]: This cmd is not working in Ubuntu but working in windows
