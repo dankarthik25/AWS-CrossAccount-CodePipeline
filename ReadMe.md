@@ -56,10 +56,10 @@ Lets consider you have two aws accounts
                 ```
             -   Role : Own AWS Account
             -   Policy:
-            -   S3FullAccess
-            -   CodeCommitFullAccess
-            -   StsAssumeRole (In Prod-Account):
-                [NOTE:] This  Role allow to communicate with Resource (roles) in other Account (account-B)
+                -   S3FullAccess
+                -   CodeCommitFullAccess
+                -   StsAssumeRole (In Prod-Account):
+                    [NOTE:] This  Role allow to communicate with Resource (roles) in other Account (account-B)
 
                 ``` json
                     {
@@ -75,12 +75,12 @@ Lets consider you have two aws accounts
 
                 ```
         -   [KMS] **Custom Manage Keys**
-            -   User : root,user1
-            -   Permission: CrossAccountRole-of-A
-            -   Access to Other AWS Account : Account-B
+                -   User : root,user1
+                -   Permission: CrossAccountRole-of-A
+                -   Access to Other AWS Account : Account-B
         -   [S3] **artifact-source** Share BuildArtifacts,Keys, Using S3 Buckets
-            -   Permission : - Get, Put data in S3 Bucket by Account- B (548593215839)
-            -   Read Listbucket by Account-B   (548593215839)
+                -   Permission : - Get, Put data in S3 Bucket by Account- B (548593215839)
+                -   Read Listbucket by Account-B   (548593215839)
                 ``` json                
                     {
                         "Version": "2012-10-17",
@@ -312,7 +312,7 @@ Change your json file as follow
 ```
 After editing the pipeline file update by aws-cli cmd
 
-``` sh
+``` bash
 
     aws codepipeline update-pipeline --cli-input-json file://failed-cross-pipeline.json --profile dan2505
 
