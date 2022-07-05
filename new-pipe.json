@@ -1,14 +1,10 @@
 {
     "pipeline": {
-        "name": "test-cloudformation-cicd",
-        "roleArn": "arn:aws:iam::918175365727:role/cross-account-role-A",
+        "name": "Automate-CloudFormation-using-CICD",
+        "roleArn": "arn:aws:iam::918175365727:role/service-role/AWSCodePipelineServiceRole-eu-west-1-Automate-CloudFormation-us",
         "artifactStore": {
             "type": "S3",
-            "location": "artifact-source",
-            "encryptionKey": {
-              "id": "arn:aws:kms:eu-west-1:918175365727:key/7bc79cce-3b1a-4a61-862e-747990aa1173",
-              "type": "KMS"
-            }
+            "location": "codepipeline-eu-west-1-787406647113"
         },
         "stages": [
             {
@@ -54,8 +50,8 @@
                         "runOrder": 1,
                         "configuration": {
                             "ActionMode": "CREATE_UPDATE",
-                            "roleArn": "arn:aws:iam::548593215839:role/CloudformationExecutionRole",
-                            "StackName": "test-cross-cloudformation-cicd",
+                            "RoleArn": "arn:aws:iam::918175365727:role/CloudformationExecutionRole",
+                            "StackName": "stack-automate-cloudformation",
                             "TemplatePath": "SourceArtifact::aws-s3-cf.yaml"
                         },
                         "outputArtifacts": [],
@@ -64,7 +60,6 @@
                                 "name": "SourceArtifact"
                             }
                         ],
-                        "roleArn": "arn:aws:iam::548593215839:role/cross-account-role-B",
                         "region": "eu-west-1",
                         "namespace": "DeployVariables"
                     }
@@ -72,5 +67,10 @@
             }
         ],
         "version": 1
+    },
+    "metadata": {
+        "pipelineArn": "arn:aws:codepipeline:eu-west-1:918175365727:Automate-CloudFormation-using-CICD",
+        "created": "2022-07-05T16:09:19.712000+05:30",
+        "updated": "2022-07-05T16:09:19.712000+05:30"
     }
 }

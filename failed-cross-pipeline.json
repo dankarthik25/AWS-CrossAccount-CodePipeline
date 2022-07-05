@@ -1,13 +1,13 @@
 {
     "pipeline": {
-        "name": "test-cloudformation-cicd",
+        "name": "Cross-Account-CloudFormation-CICD",
         "roleArn": "arn:aws:iam::918175365727:role/cross-account-role-A",
         "artifactStore": {
             "type": "S3",
             "location": "artifact-source",
             "encryptionKey": {
               "id": "arn:aws:kms:eu-west-1:918175365727:key/7bc79cce-3b1a-4a61-862e-747990aa1173",
-              "type": "KMS"
+                "type": "KMS"
             }
         },
         "stages": [
@@ -54,8 +54,8 @@
                         "runOrder": 1,
                         "configuration": {
                             "ActionMode": "CREATE_UPDATE",
-                            "roleArn": "arn:aws:iam::548593215839:role/CloudformationExecutionRole",
-                            "StackName": "test-cross-cloudformation-cicd",
+                            "RoleArn": "arn:aws:iam::548593215839:role/CloudformationExecutionRole",
+                            "StackName": "Cross-Account-CloudFormation-CICD",
                             "TemplatePath": "SourceArtifact::aws-s3-cf.yaml"
                         },
                         "outputArtifacts": [],
@@ -71,6 +71,6 @@
                 ]
             }
         ],
-        "version": 1
+        "version": 2
     }
 }
