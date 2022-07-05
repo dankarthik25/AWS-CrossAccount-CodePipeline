@@ -1,3 +1,4 @@
+* How to Cross Account between two AWS-Account
 
 Lets consider you have two aws accounts
 - Infrastructure Accout
@@ -8,8 +9,8 @@ Lets consider you have two aws accounts
 
 [GOAL]: To create a pipeline in Infrastructure Account and the build, deploy should be done in Production, Let make it simple
 - Goal is create Pipeline in Infrastructure Account and Deploy in Production Account
-
-- Requirements :
+**  Requirements :
+- Requirements
   - Infrastructure Account Id : << Account-A >> 918175365727
   - Production Account Id : << Account-B>> 548593215839
   - In Infrastructure Account(Account-A)
@@ -153,7 +154,7 @@ Lets consider you have two aws accounts
       Allow to run Block of pipeline in Account B
       - *CloudFormationExecutionRole* : Need to root permission to create Infrastructures
         Policy : AdministratorAccess
-
+* Create a Pipeline 
 - Create a Pipeline in Infrastructure Account and Run Cloudformation in Production Account
 
   Steps to create Pipeline
