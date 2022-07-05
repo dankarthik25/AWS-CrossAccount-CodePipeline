@@ -195,39 +195,43 @@ Lets consider you have two aws accounts
         - Pipeline:
             Description:
               Name:
-        	RoleName: *cross-account-role-A*
-        	BuildArtifact location : *artifact-source*
-        	Encryptionkey: *Cross-account-key*
-        	  Type: KMS
+        	  RoleName: *cross-account-role-A*
+        	  BuildArtifact location : *artifact-source*
+        	  Encryptionkey: *Cross-account-key*
+        	    Type: KMS
             Stages:
               Stage :
-        	Name: Source
-        	RepositoryName:
-        	BranchName:
+        	    Name: Source
+        	    RepositoryName:
+        	    BranchName:
               Stage:
-        	Name: Deploy
-        	DeployType: CloudFormation
-        	  Action : Create and Update
-        	  Role: *CrossAccount-BlockRun-Role-CloudformationExecutionRole* in Account B
-        	  StackName:
-        	  TemplatePath": "SourceArtifact::aws-s3-cf.yaml
-        	Role: *CrossAccount-Role-B*
+        	    Name: Deploy
+        	    DeployType: CloudFormation
+        	    Action : Create and Update
+        	    Role: *CrossAccount-BlockRun-Role-CloudformationExecutionRole* in Account B
+        	    StackName:
+        	    TemplatePath": "SourceArtifact::aws-s3-cf.yaml
+        	  Role: *CrossAccount-Role-B*
      ```
         
 Above Pipline will give error so we need to get the pipeline json file and edit and update it to aws
 
 We can get the pipeline json file by
-    ``` sh
+
+    ``` bash
 
     # To get the list of pipeline running in give account, given region 
     aws codepipeline list-pipelines --region us-east-1 --profile dan2505
     
     # To get the pipeline json file
     aws codepipeline get-pipeline --region eu-west-1 --name Cross-Account-CloudFormation-CICD --profile dan2505 > failed-cross-pipeline.json
+
     ```
 
 Change your json file as follow
+
     ``` json
+
     {
         "pipeline": {
     	"name": "Cross-Account-CloudFormation-CICD",
@@ -304,11 +308,14 @@ Change your json file as follow
     	"version": 2
         }
     }
+
     ```
 After editing the pipeline file update by aws-cli cmd
+
     ``` sh
 
     aws codepipeline update-pipeline --cli-input-json file://failed-cross-pipeline.json --profile dan2505
+
     ```
 
 
