@@ -1,18 +1,24 @@
 
 # Table of Contents
 
-1.  [How to Cross Account between two AWS-Account](#org8f483e7)
-    1.  [Requirements :](#org9a83b14)
-2.  [Create a Pipeline](#org57f788b)
+1.  [How to Cross Account between two AWS-Account](#org6d7960b)
+    1.  [Intro](#org8d32edc)
+    2.  [Requirements :](#orge6c200f)
+    3.  [Create a Pipeline](#orgca34cfd)
 
 
-<a id="org8f483e7"></a>
+<a id="org6d7960b"></a>
 
 # How to Cross Account between two AWS-Account
 
+
+<a id="org8d32edc"></a>
+
+## Intro
+
 Lets consider you have two aws accounts
 
--   Infrastructure Accout
+-   Infrastructure Account
     -   Consist of all resources it does n't run any task,project but manages
     -   All developer will push code in this account
 -   Production Account
@@ -23,7 +29,7 @@ Lets consider you have two aws accounts
 -   Goal is create Pipeline in Infrastructure Account and Deploy in Production Account
 
 
-<a id="org9a83b14"></a>
+<a id="orge6c200f"></a>
 
 ## Requirements :
 
@@ -166,34 +172,34 @@ Lets consider you have two aws accounts
                 Policy : AdministratorAccess
 
 
-<a id="org57f788b"></a>
+<a id="orgca34cfd"></a>
 
-# Create a Pipeline
+## Create a Pipeline
 
 -   Create a Pipeline in Infrastructure Account and Run Cloudformation in Production Account
     
     Steps to create Pipeline
     
-    > -   Pipeline:
-    >     Description:
-    >       Name:
-    >         RoleName: **cross-account-role-A**
-    >         BuildArtifact location : **artifact-source**
-    >         Encryptionkey: **Cross-account-key**
-    >           Type: KMS
-    >     Stages:
-    >       Stage :
-    >         Name: Source
-    >         RepositoryName:
-    >         BranchName:
-    >       Stage:
-    >         Name: Deploy
-    >         DeployType: CloudFormation
-    >           Action : Create and Update
-    >           Role: **CrossAccount-BlockRun-Role-CloudformationExecutionRole** in Account B
-    >           StackName:
-    >           TemplatePath": "SourceArtifact::aws-s3-cf.yaml
-    >         Role: **CrossAccount-Role-B**
+        - Pipeline:
+            Description:
+              Name:
+        	RoleName: *cross-account-role-A*
+        	BuildArtifact location : *artifact-source*
+        	Encryptionkey: *Cross-account-key*
+        	  Type: KMS
+            Stages:
+              Stage :
+        	Name: Source
+        	RepositoryName:
+        	BranchName:
+              Stage:
+        	Name: Deploy
+        	DeployType: CloudFormation
+        	  Action : Create and Update
+        	  Role: *CrossAccount-BlockRun-Role-CloudformationExecutionRole* in Account B
+        	  StackName:
+        	  TemplatePath": "SourceArtifact::aws-s3-cf.yaml
+        	Role: *CrossAccount-Role-B*
 
 Above Pipline will give error so we need to get the pipeline json file and edit and update it to aws
 
