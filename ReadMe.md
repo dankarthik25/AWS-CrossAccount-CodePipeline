@@ -39,6 +39,7 @@ Lets consider you have two aws accounts
     -   In Infrastructure Account(Account-A)
         -   [Role] :  **CrossAccount-Role-of-A**
             -   Trust relationship
+                ``` json
                 
                     {
                         "Version": "2012-10-17",
@@ -52,6 +53,7 @@ Lets consider you have two aws accounts
                     	}
                         ]
                     }
+                ```
             -   Role : Own AWS Account
             -   Policy:
             -   S3FullAccess
@@ -79,7 +81,7 @@ Lets consider you have two aws accounts
         -   [S3] **artifact-source** Share BuildArtifacts,Keys, Using S3 Buckets
             -   Permission : - Get, Put data in S3 Bucket by Account- B (548593215839)
             -   Read Listbucket by Account-B   (548593215839)
-                
+                ``` json                
                     {
                         "Version": "2012-10-17",
                         "Id": "Policy1553183091390",
@@ -107,10 +109,11 @@ Lets consider you have two aws accounts
                     	}
                         ]
                     }
+                ```
     -   In Production Account (Account-B)
         -   [Policies ]:
             -   CrossAccount-S3-Access-Policy (To Share Pipeline-BuildArtifact Bucket to share data include (keys, buildartifacts&#x2026;etc)
-                
+                ``` json
                     {
                         "Version": "2012-10-17",
                         "Statement": [
@@ -127,8 +130,9 @@ Lets consider you have two aws accounts
                     	}
                         ]
                     }
+                ```
             -   CrossAccount-IAM-Role-PassRole Policy : (Cloudformation) : Allow to pass the (Cloudformation)role form one account to other
-                
+                ``` json                
                     {
                         "Version": "2012-10-17",
                         "Statement": [
@@ -142,9 +146,10 @@ Lets consider you have two aws accounts
                     	}
                         ]
                     }
+                ```
             -   CrossAccount-KMS-Key-Access Policy  :
                 Allow to Encrypt,Decrpyt,GenerateDatakey,Describekey for secure transmission and storage of data 
-                
+                ``` json                
                     {
                         "Version": "2012-10-17",
                         "Statement": [
@@ -163,6 +168,8 @@ Lets consider you have two aws accounts
                     	}
                         ]
                     }
+
+                ```
         -   [Role]:  **CrossAccount-Role-of-B**
             -   Access to other AWS Account : **Account-A**
             -   Policies :
@@ -182,6 +189,8 @@ Lets consider you have two aws accounts
 -   Create a Pipeline in Infrastructure Account and Run Cloudformation in Production Account
     
     Steps to create Pipeline
+
+    ``` yaml
     
         - Pipeline:
             Description:
@@ -203,19 +212,22 @@ Lets consider you have two aws accounts
         	  StackName:
         	  TemplatePath": "SourceArtifact::aws-s3-cf.yaml
         	Role: *CrossAccount-Role-B*
-
+     ```
+        
 Above Pipline will give error so we need to get the pipeline json file and edit and update it to aws
 
 We can get the pipeline json file by
+    ``` sh
 
     # To get the list of pipeline running in give account, given region 
     aws codepipeline list-pipelines --region us-east-1 --profile dan2505
     
     # To get the pipeline json file
     aws codepipeline get-pipeline --region eu-west-1 --name Cross-Account-CloudFormation-CICD --profile dan2505 > failed-cross-pipeline.json
+    ```
 
 Change your json file as follow
-
+    ``` json
     {
         "pipeline": {
     	"name": "Cross-Account-CloudFormation-CICD",
@@ -292,10 +304,13 @@ Change your json file as follow
     	"version": 2
         }
     }
-
+    ```
 After editing the pipeline file update by aws-cli cmd
+    ``` sh
 
     aws codepipeline update-pipeline --cli-input-json file://failed-cross-pipeline.json --profile dan2505
+    ```
+
 
 [NOTE]: This cmd is not working in Ubuntu but working in windows
 
