@@ -1,0 +1,88 @@
+
+Lets consider you have two aws accounts
+- Infrastructure Accout
+  - Consist of all resources it does n't run any task,project but manages
+  - All developer will push code in this account   
+- Production Account
+  - The task like build, deploy should be done in the Production there is no data(source code) link between two account
+
+[GOAL]: To create a pipeline in Infrastructure Account and the build, deploy should be done in Production, Let make it simple
+- Goal is create Pipeline in Infrastructure Account and Deploy in Production Account
+
+- Requirements :
+  - Infrastructure Account Id : << Account-A >> 918175365727
+  - Production Account Id : << Account-B>> 548593215839
+    
+  - In Infrastructure Account(Account-A)
+    - [Role] *CrossAccount-Role-of-A*
+      - Trust relationship
+      #+begin_src 
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Principal": {
+                "Service": "codepipeline.amazonaws.com"
+            },
+            "Action": "sts:AssumeRole"
+        }
+    ]
+}
+      #+end_src
+      - Role : Own AWS Account
+      - Policy:
+      - S3FullAccess
+      - CodeCommitFullAccess
+      - StsAssumeRole (In Prod-Account)
+        #+begin_src 
+{
+    "Version": "2012-10-17",
+    "Statement": {
+        "Effect": "Allow",
+        "Action": "sts:AssumeRole",
+        "Resource": [
+            "arn:aws:iam::548593215839:role/*"
+        ]
+    }
+}
+        #+end_src
+    - [KMS] *Custom Manage Keys*
+      - User : root,user1
+      - Permission: CrossAccountRole-of-A
+      - Access to Other AWS Account : Account-B 
+    - [S3] Share BuildArtifacts,Keys, Using S3 Buckets
+      - Permission
+      - Get, Put data in S3 Bucket by Account- B 548593215839
+      - Read Listbucket by Account-B   548593215839
+      #+begin_src 
+{
+    "Version": "2012-10-17",
+    "Id": "Policy1553183091390",
+    "Statement": [
+        {
+            "Sid": "",
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": "arn:aws:iam::548593215839:root"
+            },
+            "Action": [
+                "s3:Get*",
+                "s3:Put*"
+            ],
+            "Resource": "arn:aws:s3:::artifact-source/*"
+        },
+        {
+            "Sid": "",
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": "arn:aws:iam::548593215839:root"
+            },
+            "Action": "s3:ListBucket",
+            "Resource": "arn:aws:s3:::artifact-source"
+        }
+    ]
+}
+      #+end_src
+
+  In     
