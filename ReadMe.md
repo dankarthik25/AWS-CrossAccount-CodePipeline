@@ -58,7 +58,8 @@ Lets consider you have two aws accounts
             -   CodeCommitFullAccess
             -   StsAssumeRole (In Prod-Account):
                 [NOTE:] This  Role allow to communicate with Resource (roles) in other Account (account-B)
-                
+
+                ``` json
                     {
                         "Version": "2012-10-17",
                         "Statement": {
@@ -69,6 +70,8 @@ Lets consider you have two aws accounts
                     	]
                         }
                     }
+
+                ```
         -   [KMS] **Custom Manage Keys**
             -   User : root,user1
             -   Permission: CrossAccountRole-of-A
