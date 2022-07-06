@@ -186,7 +186,7 @@ Above Pipline will give error so we need to get the pipeline json file and edit 
 We can get the pipeline json file by
 
 #+begin_src sh
-# To get the list of pipeline running in give account, given region 
+# To get the list of pipeline running in give account, given region
 aws codepipeline list-pipelines --region us-east-1 --profile dan2505
 
 # To get the pipeline json file
