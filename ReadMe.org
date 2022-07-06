@@ -154,7 +154,7 @@ Lets consider you have two aws accounts
       Allow to run Block of pipeline in Account B
       - *CloudFormationExecutionRole* : Need to root permission to create Infrastructures
         Policy : AdministratorAccess
-** Create a Pipeline 
+** Create a Pipeline in one account and deploy (CloudFormation) in other account  
 - Create a Pipeline in Infrastructure Account and Run Cloudformation in Production Account
 
   Steps to create Pipeline
@@ -285,3 +285,117 @@ aws codepipeline update-pipeline --cli-input-json file://failed-cross-pipeline.j
 [NOTE]: This cmd is not working in Ubuntu but working in windows
 
 
+
+** Create a Pipeline in one account and get the sourcecode from another account 
+The Requirements are same in case of Infrastructure Account (Account-A) and some change are Production Account (Account-B)
+The changes are
+simillar have small changes
+- [Polices]:
+  - *CrossIAM-Role-PassRole Policy*  
+        - CrossAccount-IAM-Role-PassRole Policy : (CodeCommit) : Allow to pass the (Cloudformation)role form one account to other
+        #+begin_src json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "codecommit:*",
+                "iam:PassRole"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
+        #+end_src  
+- [Role:]
+  - Role: in own account 
+  - trust Relationship : root
+  - Policy :   
+    - *CrossAccount-S3-Access Policy* : To share  Pipeline-BuildArtifact, share data(key...etc), communicate with other roles, 
+    - *CrossAccount-IAM-Role-PassRole Policy* :  Allow to pass CloudFormation Role to Account-B
+    - *CrossAccount-KMS-Key-Access Policy* :  Allow to Encrypt, Depcrpyt, Generatedatakey
+- Update  pipeline as below
+  
+#+begin_src json
+{
+    "pipeline": {
+        "name": "CA-CF-getCodeCommit-CICD-2",
+        "roleArn": "arn:aws:iam::918175365727:role/cross-account-role-A",
+        "artifactStore": {
+            "type": "S3",
+            "location": "artifact-source",
+            "encryptionKey": {
+                "id": "arn:aws:kms:eu-west-1:918175365727:alias/cross-account-key",
+                "type": "KMS"
+            }
+        },
+        "stages": [
+            {
+                "name": "Source",
+                "actions": [
+                    {
+                        "name": "Source",
+                        "actionTypeId": {
+                            "category": "Source",
+                            "owner": "AWS",
+                            "provider": "CodeCommit",
+                            "version": "1"
+                        },
+                        "runOrder": 1,
+                        "roleArn": "arn:aws:iam::548593215839:role/cross-account-role-B",
+                        "region": "eu-west-1",
+                        "configuration": {
+
+                            "BranchName": "master",
+                            "OutputArtifactFormat": "CODE_ZIP",
+                            "PollForSourceChanges": "false",
+                            "RepositoryName": "CrossAccount-2"
+                        },
+                        "outputArtifacts": [
+                            {
+                                "name": "SourceArtifact"
+                            }
+                        ],
+                        "inputArtifacts": [],
+                        "namespace": "SourceVariables"
+
+                    }
+                ]
+            },
+            {
+                "name": "Deploy",
+                "actions": [
+                    {
+                        "name": "Deploy",
+                        "actionTypeId": {
+                            "category": "Deploy",
+                            "owner": "AWS",
+                            "provider": "CloudFormation",
+                            "version": "1"
+                        },
+                        "runOrder": 1,
+                        "configuration": {
+                            "ActionMode": "CREATE_UPDATE",
+                            "RoleArn": "arn:aws:iam::548593215839:role/CloudformationExecutionRole",
+                            "StackName": "Cross-Account-CloudFormation-CICD",
+                            "TemplatePath": "SourceArtifact::aws-s3-cf.yaml"
+                        },
+                        "outputArtifacts": [],
+                        "inputArtifacts": [
+                            {
+                                "name": "SourceArtifact"
+                            }
+                        ],
+                        "roleArn": "arn:aws:iam::548593215839:role/cross-account-role-B",
+                        "region": "eu-west-1",
+                        "namespace": "DeployVariables"
+                    }
+                ]
+            }
+
+        ],
+        "version": 2
+    }
+}
+#+end_src
