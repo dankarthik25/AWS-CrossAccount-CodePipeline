@@ -288,8 +288,11 @@ aws codepipeline update-pipeline --cli-input-json file://failed-cross-pipeline.j
 
 ** Create a Pipeline in one account and get the sourcecode from another account 
 The Requirements are same in case of Infrastructure Account (Account-A) and some change are Production Account (Account-B)
+
 The changes are
 simillar have small changes
+
+In Prodcution Account (Account B) change or update policies :
 - [Polices]:
   - *CrossIAM-Role-PassRole Policy*  
         - CrossAccount-IAM-Role-PassRole Policy : (CodeCommit) : Allow to pass the (Cloudformation)role form one account to other
