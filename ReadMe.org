@@ -263,7 +263,7 @@ Change your json file as follow
                                 "name": "SourceArtifact"
                             }
                         ],
-                        "roleArn": "arn:aws:iam::548593215839:role/cross-account-role-B",
++                        "roleArn": "arn:aws:iam::548593215839:role/cross-account-role-B",
                         "region": "eu-west-1",
                         "namespace": "DeployVariables"
                     }
